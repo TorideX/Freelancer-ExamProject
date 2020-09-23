@@ -33,10 +33,11 @@ namespace Freelancer_Exam.Controllers
             {
                 Id = Guid.NewGuid().ToString(),
                 UserName = faker.Person.UserName,
+                Email = faker.Person.Email,
                 Name = faker.Person.FirstName,
                 Surname = faker.Person.LastName,
                 ProfilePicture = faker.Person.Avatar,
-                Country = new Country { CountryId = Guid.NewGuid().ToString(), Name = faker.Address.Country() }
+                Country = faker.Address.Country()
             };
 
             var project = new Project
@@ -47,7 +48,7 @@ namespace Freelancer_Exam.Controllers
                 MinPrice = 10,
                 MaxPrice = 100,
                 Status = Status.Pending,  // WTF is this???
-                RequiredSkill = new Skill { SkillId = Guid.NewGuid().ToString(), Name = faker.Random.Int() }                
+                RequiredSkill = new Skill { SkillId = Guid.NewGuid().ToString(), Name = faker.Name.JobType() }                
             };
 
             freelancerService.AddProject(project);

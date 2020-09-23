@@ -28,9 +28,9 @@ namespace Freelancer_Exam.Services.Concrete
         public List<Project> GetAllProjects()
         {
             return freelancerDb.Projects
-                //.Include(t=>t.Owner)
-                //.Include(t=>t.RequiredSkill)
-                //.Include(t=>t.Owner.User.Country)
+                .Include(t => t.Owner)
+                .Include(t => t.RequiredSkill)
+                .Include(t => t.Owner.User.Country)
                 .ToList();
         }
     }

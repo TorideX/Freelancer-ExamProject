@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 namespace Freelancer_Exam.ViewModels {
     public enum Job {
         Owner,
-        Freelancer
+        Developer
     }
 
     public class RegisterViewModel {

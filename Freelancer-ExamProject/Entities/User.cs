@@ -10,7 +10,7 @@ namespace Freelancer_Exam.Entities
     {
         public string Name { get; set; }
         public string Surname { get; set; }
-        public Country Country { get; set; }
+        public string Country { get; set; }
         public string ProfilePicture { get; set; }
 
     }

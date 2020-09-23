@@ -8,6 +8,6 @@ namespace Freelancer_Exam.Entities
     public class Skill
     {
         public string SkillId { get; set; }
-        public int Name { get; set; } // CHANGE THISSSS
+        public string Name { get; set; }
     }
 }
