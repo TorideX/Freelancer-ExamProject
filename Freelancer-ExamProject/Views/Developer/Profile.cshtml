@@ -1,0 +1,181 @@
+@model Freelancer_Exam.ViewModels.DeveloperViewModel
+
+<style>
+     .prof-photo {
+            width: 278px;
+            height: 278px;
+        }
+    
+     .img-container {
+            position: relative;
+            width: 100%;
+            max-width: 400px;
+        }
+    
+     .img-container img {
+            width: 100%;
+            height: auto;
+        }
+    
+     .img-container .btn {
+            outline: none;
+            box-shadow: none;
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            background-color: rgb(230, 230, 230);
+            color: black;
+            font-size: 10px;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            text-align: center;
+        }
+    
+     .container .btn:hover {
+            background-color: black;
+            color: white;
+        }
+    
+     input[type="file"] {
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            filter: alpha(opacity=0);
+            zoom: 1;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 999;
+        }
+        
+        .badge-info a:hover {
+          color: #4a4a4a;
+          cursor: pointer;
+        }
+</style>
+@* <link rel="stylesheet" href="~/bulma-0.9.0/css/bulma.css"> *@
+
+<div class="row mt-lg-3 p-3" style="background-color: #f8f8f8;">
+    <div class="col-md-3">
+        <form class="img-container" id="upload-form" enctype="multipart/form-data" method="post"
+              asp-action="UploadProfilePhoto" asp-controller="Developer">
+            <img src="https://www.f-cdn.com/assets/main/en/assets/unknown.png" class="prof-photo" style="width:100%" alt="">
+            <input id="file" name="file" type="file"/>
+            <button class="btn">
+                <i class="fa fa-upload"></i>
+            </button>
+        </form>
+        <br/>
+        <p>Baku,Azerbaijan</p>
+        <p>It's currently 5:19 pm here</p>
+        <p>Joined September 8,2020</p>
+    </div>
+    <div class="col-md-5 ml-lg-5">
+        <div>
+            <div class="d-flex">
+                <input type="hidden" value="@Model.Id" id="developer-id" />
+                <h3>Agil H.</h3>
+                <a style="font-size: 20px;" class="text-muted">@@hasanovagil13</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div>
+            <div class="d-flex justify-content-between">
+                <h5>Top Skills</h5>
+                <a class="btn btn-primary text-white" data-target="#myModal" data-toggle="modal">
+                    Edit Skills
+                </a>
+            </div>
+            <div>
+                <hr/>
+                <div class='d-flex flex-wrap'>
+                    @foreach (var skill in Model.Skills) {
+                        <span class='badge badge-success user-select-none m-2'>@skill.Name</span>
+                    }
+                </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="myModal" role="dialog">
+        <div class="modal-dialog">
+
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Edit Skills</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <form id="form-skill" class="form-group">
+                        <input class="form-control" placeholder="Enter skill" type="text" id="newSkill" name="newSkill"/>
+                        <br>
+                        <button id="add-skill-btn" type="submit" class="btn btn-primary">Add</button>
+                    </form>
+                    <hr/>
+
+                    <div id="field-skills" class='d-flex flex-wrap'>
+                        @foreach (var skill in Model.Skills) {
+                            <span class='badge badge-success user-select-none m-2'>@skill.Name<a href="#"  class="m-1 remove-skill text-white" ><i class='fa fa-close'></i></a></span>
+                        }
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button id="m-save-btn" type="button" class="btn btn-primary">Save</button>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+<script src="/lib/jquery/dist/jquery.js">
+ 
+</script>
+<script>
+
+$(function (){
+    $('#file').on('change',function (){
+         $('#upload-form').submit();
+    });
+    
+    
+    $("#form-skill").on('submit',function (e){
+        e.preventDefault();
+        const newSkill = $('#newSkill').val();
+        const html = `<span class='badge badge-info user-select-none m-2'>${newSkill}<a class="m-1"><i class='fa fa-close'></i></a></span>`;  
+        $('#newSkill').val('');
+        $("#field-skills").append(html);
+    });
+    
+    
+    $('#myModal').on('hidden.bs.modal',function (){
+        window.location.reload();
+    })
+    
+    $('.remove-skill').on('click', function (event){
+        $(this).parent().remove();
+    })
+    
+    $('#m-save-btn').on('click',function (){
+        const spans = $('#field-skills').find("span");
+        const skillArray = [];
+        for (const span of spans) {
+           skillArray.push(span.innerText);
+        }
+        const id = $('#developer-id').val();
+        console.log(id);
+        $.ajax(`/Developer/UpdateSkills/?id=${id}`,{
+            method:"Post",
+            data : JSON.stringify(skillArray),
+            contentType: "application/json; charset=utf-8",
+            success(){
+                window.location.reload();
+            }
+        });
+    })
+})
+</script>

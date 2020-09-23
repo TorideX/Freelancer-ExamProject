@@ -25,16 +25,34 @@ namespace Freelancer_Exam.Entities.Db_Context
             owner.HasKey(t => t.OwnerId);
             owner.HasMany(t => t.Projects).WithOne(t => t.Owner);
 
-            var developer = builder.Entity<Developer>();
-            developer.HasKey(t => t.DeveloperId);
-            developer.HasMany(t => t.Skills);
-            developer.HasOne(t => t.User);
+            builder.Entity<DeveloperSkill>().HasKey(ds => new {ds.DeveloperId, ds.SkillId});
 
-            var bidRequest = builder.Entity<BidRequest>();
+            builder.Entity<DeveloperSkill>()
+                .HasOne(ds => ds.Developer)
+                .WithMany(d => d.DeveloperSkill)
+                .HasForeignKey(ds => ds.SkillId);
+            
+            
+            builder.Entity<DeveloperSkill>()
+                .HasOne(ds => ds.Skill)
+                .WithMany(s => s.DeveloperSkill)
+                .HasForeignKey(ds => ds.DeveloperId);
+
+            builder.Entity<Country>()
+                .HasKey(c => c.CountryId);
+
+            builder.Entity<Developer>()
+                .HasKey(d => d.DeveloperId);
+
+            builder.Entity<Skill>()
+                .HasKey(s => s.SkillId);
+
+                var bidRequest = builder.Entity<BidRequest>();
             bidRequest.HasKey(t => t.BidRequestId);
             bidRequest.HasOne(t => t.Developer).WithMany(t => t.BidRequests);
             bidRequest.HasOne(t => t.Project);
-
+    
+            
             //var confirmedRequest = builder.Entity<ConfirmedRequest>();
             //confirmedRequest.HasKey(t => t.ConfirmedRequestId);
             //confirmedRequest.HasOne(t => t.BidRequest);
@@ -43,6 +61,7 @@ namespace Freelancer_Exam.Entities.Db_Context
 
             base.OnModelCreating(builder);
         }
+        public DbSet<DeveloperSkill> DeveloperSkills { get; set; }
         public DbSet<Owner> Owners { get; set; }
         public DbSet<Developer> Developers { get; set; }
         public DbSet<Project> Projects { get; set; }

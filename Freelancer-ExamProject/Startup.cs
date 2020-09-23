@@ -28,6 +28,7 @@ namespace Freelancer_Exam
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
+            services.AddTransient<IAccountService, AccountService>();
             services.AddTransient<IFreelancerService, FreelancerService>();
             services.AddDbContext<FreelancerDbContext>(opt => opt.UseSqlServer(Configuration.GetConnectionString("Default")));
             services.AddIdentity<User, Role>()

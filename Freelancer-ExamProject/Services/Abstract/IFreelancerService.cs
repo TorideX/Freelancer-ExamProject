@@ -10,5 +10,6 @@ namespace Freelancer_Exam.Services.Abstract
     {
         List<Project> GetAllProjects();
         void AddProject(Project project);
+        void UpdateSkills(string dId, IEnumerable<string> skills);
     }
 }
