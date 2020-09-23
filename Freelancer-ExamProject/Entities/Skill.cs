@@ -7,8 +7,8 @@ namespace Freelancer_Exam.Entities
 {
     public class Skill
     {
-        public List<DeveloperSkill> DeveloperSkill { get; set; }
         public string SkillId { get; set; }
         public string Name { get; set; }
+        public List<DeveloperSkill> DeveloperSkill { get; set; }
     }
 }

@@ -30,8 +30,7 @@ namespace Freelancer_Exam.Entities.Db_Context
             builder.Entity<DeveloperSkill>()
                 .HasOne(ds => ds.Developer)
                 .WithMany(d => d.DeveloperSkill)
-                .HasForeignKey(ds => ds.SkillId);
-            
+                .HasForeignKey(ds => ds.SkillId);            
             
             builder.Entity<DeveloperSkill>()
                 .HasOne(ds => ds.Skill)
@@ -47,12 +46,11 @@ namespace Freelancer_Exam.Entities.Db_Context
             builder.Entity<Skill>()
                 .HasKey(s => s.SkillId);
 
-                var bidRequest = builder.Entity<BidRequest>();
+            var bidRequest = builder.Entity<BidRequest>();
             bidRequest.HasKey(t => t.BidRequestId);
             bidRequest.HasOne(t => t.Developer).WithMany(t => t.BidRequests);
             bidRequest.HasOne(t => t.Project);
-    
-            
+                
             //var confirmedRequest = builder.Entity<ConfirmedRequest>();
             //confirmedRequest.HasKey(t => t.ConfirmedRequestId);
             //confirmedRequest.HasOne(t => t.BidRequest);

@@ -12,6 +12,5 @@ namespace Freelancer_Exam.Entities
         public string Surname { get; set; }
         public string Country { get; set; }
         public string ProfilePicture { get; set; }
-
     }
 }
