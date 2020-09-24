@@ -15,22 +15,26 @@ namespace Freelancer_Exam.Services.Concrete
     {
         private readonly UserManager<User> userManager;
         private readonly FreelancerDbContext freelancerDb;
-
-        public AccountService(UserManager<User> userManager, FreelancerDbContext freelancerDb)
+        private readonly SignInManager<User> signInManager;
+        private readonly RoleManager<Role> roleManager;
+        public AccountService(UserManager<User> userManager, FreelancerDbContext freelancerDb, SignInManager<User> signInManager, RoleManager<Role> roleManager)
         {
             this.userManager = userManager;
             this.freelancerDb = freelancerDb;
+            this.signInManager = signInManager;
+            this.roleManager = roleManager;
         }
 
         public async Task<BaseResponse> SignIn(LoginViewModel userModel)
         {
             var user = await userManager.FindByEmailAsync(userModel.Email);
             if (user == null) return new BaseResponse(false, "Email does not exist");
-
+            
             var isUser = await userManager.CheckPasswordAsync(user, userModel.Password);
             if (!isUser) return new BaseResponse(false, "Password is incorrect");
 
-            return new BaseResponse(true, user);
+            var result = await signInManager.PasswordSignInAsync(user,userModel.Password,false,false);
+            return result.Succeeded ? new BaseResponse(true, user) : new BaseResponse(false, "Fail");
         }
 
         public async Task<BaseResponse> SignUp(RegisterViewModel userModel)
@@ -39,6 +43,7 @@ namespace Freelancer_Exam.Services.Concrete
             if (tempUser != null) return new BaseResponse(false, "Email already exist");
             var newUser = new User
             {
+                Id = Guid.NewGuid().ToString(),
                 UserName = userModel.Email,
                 Name = userModel.FirstName,
                 Surname = userModel.LastName,
@@ -55,17 +60,24 @@ namespace Freelancer_Exam.Services.Concrete
         private async Task CreateUserWithRole(RegisterViewModel userModel)
         {
             var user = await userManager.FindByEmailAsync(userModel.Email);
-            if (userModel.Job == Job.Developer)
-            {
+            if (userModel.Job == Job.Developer) {
+                var roleExist = await roleManager.FindByNameAsync("Developer");
+                if (roleExist == null) {
+                    await roleManager.CreateAsync(new Role{Name = "Developer", Id = Guid.NewGuid().ToString()});
+                }
                 await userManager.AddToRoleAsync(user, "Developer");
-                freelancerDb.Developers.Add(new Developer { User = user });
+                await freelancerDb.Developers.AddAsync(new Developer { User = user,DeveloperId = Guid.NewGuid().ToString()});
             }
             else
             {
+                var roleExist = await roleManager.FindByNameAsync("Owner");
+                if (roleExist == null) {
+                    await roleManager.CreateAsync(new Role{Name = "Owner", Id = Guid.NewGuid().ToString()});
+                }
                 await userManager.AddToRoleAsync(user, "Owner");
-                freelancerDb.Owners.Add(new Owner { User = user });
+                await freelancerDb.Owners.AddAsync(new Owner { User = user, OwnerId = Guid.NewGuid().ToString()});
             }
-            freelancerDb.SaveChanges();
+            await freelancerDb.SaveChangesAsync();
         }
     }
 }

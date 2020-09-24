@@ -26,6 +26,10 @@ namespace Freelancer_Exam.Services.Concrete
             freelancerDb.SaveChanges();
         }
 
+        public List<Skill> GetDeveloperSkills(string dId) {
+            return freelancerDb.DeveloperSkills.Where(ds => ds.DeveloperId == dId).Select(ds => ds.Skill).ToList();
+        }
+
 
         public void UpdateSkills(string dId, IEnumerable<string> skillNames) {
             // var developer = freelancerDb.Developers.FirstOrDefault(d => d.DeveloperId == dId);
