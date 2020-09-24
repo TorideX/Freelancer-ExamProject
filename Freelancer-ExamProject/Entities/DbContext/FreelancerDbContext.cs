@@ -30,12 +30,12 @@ namespace Freelancer_Exam.Entities.Db_Context
             builder.Entity<DeveloperSkill>()
                 .HasOne(ds => ds.Developer)
                 .WithMany(d => d.DeveloperSkill)
-                .HasForeignKey(ds => ds.SkillId);            
+                .HasForeignKey(ds => ds.DeveloperId);            
             
             builder.Entity<DeveloperSkill>()
                 .HasOne(ds => ds.Skill)
                 .WithMany(s => s.DeveloperSkill)
-                .HasForeignKey(ds => ds.DeveloperId);
+                .HasForeignKey(ds => ds.SkillId);
 
             builder.Entity<Country>()
                 .HasKey(c => c.CountryId);

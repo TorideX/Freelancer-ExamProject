@@ -26,6 +26,7 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.4" />
   </ItemGroup>
 
   <ItemGroup>
@@ -103,6 +104,10 @@
     <_ContentIncludedByDefault Remove="wwwroot\bulma-0.9.0\sass\utilities\initial-variables.sass" />
     <_ContentIncludedByDefault Remove="wwwroot\bulma-0.9.0\sass\utilities\mixins.sass" />
     <_ContentIncludedByDefault Remove="wwwroot\bulma-0.9.0\sass\utilities\_all.sass" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\img\" />
   </ItemGroup>
 
 

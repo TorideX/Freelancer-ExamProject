@@ -46,12 +46,18 @@ namespace Freelancer_Exam.Services.Concrete
                 Name = userModel.FirstName,
                 Surname = userModel.LastName,
                 Country = userModel.Country,
-                Email = userModel.Email
+                Email = userModel.Email,
+                JoinedDate = DateTime.Now
             };            
             var result = await userManager.CreateAsync(newUser, userModel.Password);
             if (!result.Succeeded) return new BaseResponse(false, "Couldn't create User");
 
             await CreateUserWithRole(userModel);
+            return new BaseResponse(true);
+        }
+
+        public async Task<BaseResponse> SignOut() {
+            await signInManager.SignOutAsync();
             return new BaseResponse(true);
         }
 

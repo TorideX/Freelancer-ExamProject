@@ -58,22 +58,38 @@ namespace Freelancer_Exam.Services.Concrete
         }
 
         public void UpdateSkills(string dId, IEnumerable<string> skillNames) {
-            // var developer = freelancerDb.Developers.FirstOrDefault(d => d.DeveloperId == dId);
-            // if(developer == null)
-            //     return;
-            //
-            //
-            // var skills = freelancerDb.Skills ?? new InternalDbSet<Skill>(freelancerDb);
-            // foreach (var skillName in skillNames) {
-            //     var existSkill = skills.FirstOrDefault(s => s.Name == skillName);
-            //     if (existSkill!= null) {
-            //         existSkill = skills.Add(new Skill {Name = skillName}).Entity;
-            //     }
-            //
-            //     if (developer.Skills.FirstOrDefault(s => s.Name == skillName) == null) {
-            //         developer.Skills.Add(existSkill);
-            //     }
-            // }
+            var developer = freelancerDb.Developers.FirstOrDefault(d => d.DeveloperId == dId);
+            if (developer == null) return;
+
+            var dbDeveloperSkills = freelancerDb.DeveloperSkills;
+            var dbSkills = freelancerDb.Skills;
+            freelancerDb.SaveChanges();
+
+            foreach (var skillName in skillNames) {
+
+                if (dbDeveloperSkills?.FirstOrDefault(ds =>
+                    ds.DeveloperId == developer.DeveloperId && ds.Skill.Name == skillName) != null) {
+                    continue;
+                }
+
+                var existSkill = dbSkills.FirstOrDefault(s => s.Name == skillName);
+                if (existSkill == null) { 
+                    existSkill = (freelancerDb.Skills.Add(new Skill {
+                        Name = skillName,
+                        SkillId = Guid.NewGuid().ToString(),
+                        DeveloperSkill = new List<DeveloperSkill>()
+                    })).Entity;
+                }
+
+                freelancerDb.DeveloperSkills.Add(new DeveloperSkill {
+                    Developer = developer,
+                    Skill = existSkill,
+                    DeveloperId = developer.DeveloperId,
+                    SkillId = existSkill.SkillId
+                });
+            }
+
+            freelancerDb.SaveChanges();
         }
         
         public List<Project> GetAllProjects()

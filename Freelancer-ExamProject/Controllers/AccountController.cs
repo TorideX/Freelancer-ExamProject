@@ -1,13 +1,15 @@
+using System;
 using System.Threading.Tasks;
+using Freelancer_Exam.Entities;
 using Freelancer_Exam.Services.Abstract;
 using Freelancer_Exam.ViewModels;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Freelancer_Exam.Controllers {
     public class AccountController : Controller {
         private readonly IAccountService _accountService;
-
-        public AccountController(IAccountService accountService) {
+        public AccountController(IAccountService accountService, UserManager<User> userManager) {
             _accountService = accountService;
         }
         
@@ -20,6 +22,12 @@ namespace Freelancer_Exam.Controllers {
         [HttpGet]
         public async Task<IActionResult> Register() {
             return View();
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> LogOut() {
+            await _accountService.SignOut();
+            return RedirectToAction("Login", "Account");
         }
 
         [HttpPost]

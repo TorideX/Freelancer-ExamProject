@@ -11,5 +11,6 @@ namespace Freelancer_Exam.Services.Abstract
     {
         Task<BaseResponse> SignIn(LoginViewModel userModel);
         Task<BaseResponse> SignUp(RegisterViewModel userModel);
+        Task<BaseResponse> SignOut();
     }
 }
