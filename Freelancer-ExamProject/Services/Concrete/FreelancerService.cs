@@ -19,14 +19,6 @@ namespace Freelancer_Exam.Services.Concrete
             this.freelancerDb = freelancerDb;
         }
 
-        public void AddProject(Project project)
-        {
-            project.ProjectId = Guid.NewGuid().ToString();
-            freelancerDb.Projects.Add(project);
-            freelancerDb.SaveChanges();
-        }
-
-
         public void UpdateSkills(string dId, IEnumerable<string> skillNames) {
             // var developer = freelancerDb.Developers.FirstOrDefault(d => d.DeveloperId == dId);
             // if(developer == null)

@@ -3,10 +3,14 @@ using Freelancer_Exam.Entities.Db_Context;
 using Freelancer_Exam.Models;
 using Freelancer_Exam.Services.Abstract;
 using Freelancer_Exam.ViewModels;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace Freelancer_Exam.Services.Concrete
@@ -15,11 +19,13 @@ namespace Freelancer_Exam.Services.Concrete
     {
         private readonly UserManager<User> userManager;
         private readonly FreelancerDbContext freelancerDb;
+        private readonly IHttpContextAccessor httpContextAccessor;
 
-        public AccountService(UserManager<User> userManager, FreelancerDbContext freelancerDb)
+        public AccountService(UserManager<User> userManager, FreelancerDbContext freelancerDb, IHttpContextAccessor httpContextAccessor)
         {
             this.userManager = userManager;
             this.freelancerDb = freelancerDb;
+            this.httpContextAccessor = httpContextAccessor;
         }
 
         public async Task<BaseResponse> SignIn(LoginViewModel userModel)
@@ -30,7 +36,22 @@ namespace Freelancer_Exam.Services.Concrete
             var isUser = await userManager.CheckPasswordAsync(user, userModel.Password);
             if (!isUser) return new BaseResponse(false, "Password is incorrect");
 
+            await AddToCookie(user);
+
             return new BaseResponse(true, user);
+        }
+
+        public async Task AddToCookie(User user)
+        {
+            var roles = await userManager.GetRolesAsync(user);
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.Role, roles[0]),
+                new Claim(ClaimTypes.Email, user.Email)
+            };
+            var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+            var principal = new ClaimsPrincipal(identity);
+            await httpContextAccessor.HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
         }
 
         public async Task<BaseResponse> SignUp(RegisterViewModel userModel)

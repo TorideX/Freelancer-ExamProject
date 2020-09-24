@@ -9,7 +9,6 @@ namespace Freelancer_Exam.Services.Abstract
     public interface IFreelancerService
     {
         List<Project> GetAllProjects();
-        void AddProject(Project project);
         void UpdateSkills(string dId, IEnumerable<string> skills);
     }
 }

@@ -12,10 +12,12 @@ namespace Freelancer_Exam.Controllers
     public class TestingController : Controller
     {
         private readonly IFreelancerService freelancerService;
+        private readonly IOwnerService ownerService;
 
-        public TestingController(IFreelancerService freelancerService)
+        public TestingController(IFreelancerService freelancerService, IOwnerService ownerService)
         {
             this.freelancerService = freelancerService;
+            this.ownerService = ownerService;
         }
 
         [HttpGet]
@@ -25,7 +27,14 @@ namespace Freelancer_Exam.Controllers
             return projects.ToString();
         }
 
-        public string AddProject()
+        [HttpGet]
+        public string GetOwnerProjects([FromQuery]string ownerId)
+        {
+            var projects = ownerService.GetProjects(ownerId);
+            return projects.ToString();
+        }
+
+        public string AddOwnerProject()
         {
             var faker = new Bogus.Faker();
 
@@ -51,7 +60,7 @@ namespace Freelancer_Exam.Controllers
                 RequiredSkill = new Skill { SkillId = Guid.NewGuid().ToString(), Name = faker.Name.JobType() }                
             };
 
-            freelancerService.AddProject(project);
+            ownerService.AddProject(project);
             return "Added";
         }
     }

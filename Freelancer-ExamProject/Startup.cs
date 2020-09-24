@@ -29,12 +29,15 @@ namespace Freelancer_Exam
         {
             services.AddControllersWithViews();
             services.AddTransient<IAccountService, AccountService>();
+            services.AddTransient<IOwnerService, OwnerService>();
             services.AddTransient<IFreelancerService, FreelancerService>();
             services.AddDbContext<FreelancerDbContext>(opt => opt.UseSqlServer(Configuration.GetConnectionString("Default")));
             services.AddIdentity<User, Role>()
                 .AddEntityFrameworkStores<FreelancerDbContext>()
                 .AddDefaultTokenProviders();
             services.AddAuthentication();
+
+            services.AddHttpContextAccessor();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
