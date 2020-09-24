@@ -1,3 +1,4 @@
+@using Freelancer_Exam.Entities
 @model Freelancer_Exam.ViewModels.DeveloperViewModel
 
 <style>
@@ -91,8 +92,8 @@
             <div>
                 <hr/>
                 <div class='d-flex flex-wrap'>
-                    @foreach (var skill in Model.Skills) {
-                        <span class='badge badge-success user-select-none m-2'>@skill.Name</span>
+                    @foreach (var skill in Model.DeveloperSkillViewModel.Where(ds => ds.DeveloperId == @Model.Id)) {
+                        <span class='badge badge-success user-select-none m-2'>@skill.SkillViewModel.Name</span>
                     }
                 </div>
                 </div>
@@ -117,8 +118,8 @@
                     <hr/>
 
                     <div id="field-skills" class='d-flex flex-wrap'>
-                        @foreach (var skill in Model.Skills) {
-                            <span class='badge badge-success user-select-none m-2'>@skill.Name<a href="#"  class="m-1 remove-skill text-white" ><i class='fa fa-close'></i></a></span>
+                        @foreach (var skill in Model.DeveloperSkillViewModel.Where(ds => ds.DeveloperId == @Model.Id)) {
+                            <span class='badge badge-success user-select-none m-2'>@skill.SkillViewModel.SkillId<a href="#"  class="m-1 remove-skill text-white" ><i class='fa fa-close'></i></a></span>
                         }
                     </div>
                 </div>
@@ -131,7 +132,52 @@
         </div>
     </div>
 
+<div class="row p-3 d-flex justify-content-start">
+    
+    
+    @foreach (var bidRequest in Model.BidRequests) {
+        <div class="card m-3" style="width: 18rem;">
+            <div class="card-body">
+                <h5 class="card-title text-success">@bidRequest.Project.Title</h5>
+                <p class="card-text">Project Description</p>
+                <span class="text-sm-left small text-black-50">Owner : <span>@bidRequest.Project.Owner.User.Name</span></span>
+                <br>
+                <span class="text-sm-left small text-black-50">Creation Date: <span>@bidRequest.CreationDate</span></span>
+                <br>
+                <span class="text-sm-left small text-black-50">Deadline : <span>@bidRequest.Deadline</span></span>
+                <hr/>
+                @switch (bidRequest.Project.Status) {
+                    case Status.Pending:
+                        <span class="text-warning">Pending</span>
+                        break;
+                    case Status.Working:
+                        <span class="text-success">Completed</span>
+                        break;
+                    case Status.Completed:
+                        <span class="text-info">Working</span>
+                        break;
+                }
+            </div>
+        </div>
+    }
+    
+    <div class="card m-3" style="width: 18rem;">
+        <div class="card-body">
+            <h5 class="card-title text-success">Project Title</h5>
+            <p class="card-text">Project Description</p>
+            <span class="text-sm-left small text-black-50">Owner : <span>John Doe</span></span>
+            <br>
+            <span class="text-sm-left small text-black-50">Creation Date: <span>20.04.20</span></span>
+            <br>
+            <span class="text-sm-left small text-black-50">Deadline : <span>20.12.20</span></span>
+            <hr/>
+            <span class="text-info">Working</span>
+            @* <a href="#" class="btn btn-primary">Go somewhere</a> *@
+        </div>
+    </div>
 
+
+</div>
 <script src="/lib/jquery/dist/jquery.js">
  
 </script>
@@ -146,7 +192,7 @@ $(function (){
     $("#form-skill").on('submit',function (e){
         e.preventDefault();
         const newSkill = $('#newSkill').val();
-        const html = `<span class='badge badge-info user-select-none m-2'>${newSkill}<a class="m-1"><i class='fa fa-close'></i></a></span>`;  
+        const html = `<span class='badge badge-success user-select-none m-2'>${newSkill}<a href="#" class="m-1 remove-skill text-white"><i class='fa fa-close'></i></a></span>`;  
         $('#newSkill').val('');
         $("#field-skills").append(html);
     });
@@ -156,8 +202,8 @@ $(function (){
         window.location.reload();
     })
     
-    $('.remove-skill').on('click', function (event){
-        $(this).parent().remove();
+    $('#field-skills').on('click', '.remove-skill',function (){
+         $(this).parent().remove();
     })
     
     $('#m-save-btn').on('click',function (){

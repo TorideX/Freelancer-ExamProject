@@ -19,6 +19,7 @@ namespace Freelancer_Exam.Services.Concrete
             this.freelancerDb = freelancerDb;
         }
 
+
         public void UpdateSkills(string dId, IEnumerable<string> skillNames) {
             // var developer = freelancerDb.Developers.FirstOrDefault(d => d.DeveloperId == dId);
             // if(developer == null)
