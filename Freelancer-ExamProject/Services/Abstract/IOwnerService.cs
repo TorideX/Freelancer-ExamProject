@@ -1,4 +1,5 @@
 ﻿using Freelancer_Exam.Entities;
+using Freelancer_Exam.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,7 +9,7 @@ namespace Freelancer_Exam.Services.Abstract
 {
     public interface IOwnerService
     {
-        void AddProject(Project project);
-        List<Project> GetProjects(string ownerId);
+        bool AddProject(string userId, AddProjectViewModel project);
+        List<Project> GetProjects(string userId);
     }
 }

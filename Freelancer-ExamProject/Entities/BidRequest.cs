@@ -5,6 +5,12 @@ using System.Threading.Tasks;
 
 namespace Freelancer_Exam.Entities
 {
+    public enum RequestStatus
+    {
+        Rejected = 0,
+        Pending,
+        Confirmed
+    }
     public class BidRequest
     {
         public string BidRequestId { get; set; }
@@ -13,7 +19,7 @@ namespace Freelancer_Exam.Entities
         public double Price { get; set; }
         public DateTime CreationDate { get; set; }
         public string Note { get; set; }
-        public bool IsConfirmed { get; set; }
-        public DateTime Deadline { get; set; }
+        public RequestStatus RequestStatus { get; set; }
+        public int DaysToFinish { get; set; }        
     }
 }

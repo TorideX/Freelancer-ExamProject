@@ -50,10 +50,10 @@ namespace Freelancer_Exam.Entities.Db_Context
             bidRequest.HasKey(t => t.BidRequestId);
             bidRequest.HasOne(t => t.Developer).WithMany(t => t.BidRequests);
             bidRequest.HasOne(t => t.Project);
-                
-            //var confirmedRequest = builder.Entity<ConfirmedRequest>();
-            //confirmedRequest.HasKey(t => t.ConfirmedRequestId);
-            //confirmedRequest.HasOne(t => t.BidRequest);
+
+            var confirmedRequest = builder.Entity<ConfirmedRequest>();
+            confirmedRequest.HasKey(t => t.ConfirmedRequestId);
+            confirmedRequest.HasOne(t => t.BidRequest);
 
             builder.Entity<Project>().HasKey(t => t.ProjectId);
 
@@ -64,7 +64,7 @@ namespace Freelancer_Exam.Entities.Db_Context
         public DbSet<Developer> Developers { get; set; }
         public DbSet<Project> Projects { get; set; }
         public DbSet<BidRequest> BidRequests { get; set; }
-        //public DbSet<ConfirmedRequest> ConfirmedRequests { get; set; }
+        public DbSet<ConfirmedRequest> ConfirmedRequests { get; set; }
         public DbSet<Country> Countries { get; set; }
         public DbSet<Skill> Skills { get; set; }
     }    

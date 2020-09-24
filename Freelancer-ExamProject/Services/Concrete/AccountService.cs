@@ -64,7 +64,7 @@ namespace Freelancer_Exam.Services.Concrete
                     await roleManager.CreateAsync(new Role{Name = "Developer", Id = Guid.NewGuid().ToString()});
                 }
                 await userManager.AddToRoleAsync(user, "Developer");
-                await freelancerDb.Developers.AddAsync(new Developer { User = user,DeveloperId = Guid.NewGuid().ToString()});
+                await freelancerDb.Developers.AddAsync(new Developer { User = user,DeveloperId = user.Id });
             }
             else
             {
@@ -73,7 +73,7 @@ namespace Freelancer_Exam.Services.Concrete
                     await roleManager.CreateAsync(new Role{Name = "Owner", Id = Guid.NewGuid().ToString()});
                 }
                 await userManager.AddToRoleAsync(user, "Owner");
-                await freelancerDb.Owners.AddAsync(new Owner { User = user, OwnerId = Guid.NewGuid().ToString()});
+                await freelancerDb.Owners.AddAsync(new Owner { User = user, OwnerId = user.Id });
             }
             await freelancerDb.SaveChangesAsync();
         }
