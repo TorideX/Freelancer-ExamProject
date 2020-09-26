@@ -25,7 +25,7 @@ namespace Freelancer_Exam.Services.Concrete
             var owner = freelancerDb.Owners
                 .Include(t=>t.User)
                 .Include(t=>t.Projects)
-                .ThenInclude(pr=>pr.RequiredSkill)
+                .ThenInclude(pr=>pr.ProjectSkill)
                 .FirstOrDefault(t => t.OwnerId == ownerId);
 
             if (owner == null) return new List<Project>();
@@ -44,7 +44,7 @@ namespace Freelancer_Exam.Services.Concrete
                 Title = project.Title,
                 MaxPrice = project.MaxPrice,
                 MinPrice = project.MinPrice,
-                RequiredSkill = project.RequiredSkill,
+                // RequiredSkill = project.RequiredSkill,
                 Status = project.Status
             };
 

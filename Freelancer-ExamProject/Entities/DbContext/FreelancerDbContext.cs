@@ -36,6 +36,19 @@ namespace Freelancer_Exam.Entities.Db_Context
                 .HasOne(ds => ds.Skill)
                 .WithMany(s => s.DeveloperSkill)
                 .HasForeignKey(ds => ds.SkillId);
+            
+            
+            builder.Entity<ProjectSkill>().HasKey(ds => new {ds.ProjectId, ds.SkillId});
+
+            builder.Entity<ProjectSkill>()
+                .HasOne(ds => ds.Project)
+                .WithMany(d => d.ProjectSkill)
+                .HasForeignKey(ds => ds.ProjectId);            
+            
+            builder.Entity<ProjectSkill>()
+                .HasOne(ds => ds.Skill)
+                .WithMany(s => s.ProjectSkill)
+                .HasForeignKey(ds => ds.SkillId);
 
             builder.Entity<Country>()
                 .HasKey(c => c.CountryId);

@@ -111,6 +111,13 @@
                         <br />
                         <input type="text" class="form-control" placeholder="Max Price" asp-for="AddProjectViewModel.MaxPrice" />
                         <br />
+                        <div class="w-100">
+                             <input id="modal-skill-input" type="text" class="form-control w-75 d-inline" placeholder="Skill">
+                             <button id="modal-add-skill" class="btn btn-primary">Add Skill</button>
+                        </div>
+                        <div id="field-skills" class="d-flex flex-wrap">
+                            
+                        </div>
                     </form>
                 </div>
                 
@@ -161,4 +168,17 @@
     $('#file').on('change',function (){
         $('#upload-form').submit();
     });
+    $('#field-skills').on('click', '.remove-skill',function (){
+             $(this).parent().remove();
+    });
+    $('#modal-add-skill').on('click',function (e){
+        e.preventDefault();
+        
+        const skillName = $('#modal-skill-input').val();
+        if (skillName.length > 1){
+            const html = `<span class='badge badge-success user-select-none m-2'>${skillName}<a href="#" class="m-1 remove-skill text-white"><i class='fa fa-close'></i></a></span>`;   
+            $("#field-skills").append(html);
+            $('#modal-skill-input').val('');
+        }
+    })
 </script>

@@ -42,10 +42,10 @@ namespace Freelancer_Exam.Controllers {
             if (owner.Projects != null) {
                 foreach (var proj in owner.Projects) {
                     projectList.Add(new ProjectViewModel {
-                        RequiredSkill = new SkillViewModel {
-                            Name = proj.RequiredSkill.Name,
-                            SkillId = proj.RequiredSkill.SkillId
-                        },
+                        // RequiredSkill = new SkillViewModel {
+                        //     Name = proj.RequiredSkill.Name,
+                        //     SkillId = proj.RequiredSkill.SkillId
+                        // },
                         Description = proj.Description,
                         MaxPrice = proj.MaxPrice,
                         MinPrice = proj.MinPrice,

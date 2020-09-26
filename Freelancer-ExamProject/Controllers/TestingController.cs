@@ -58,7 +58,7 @@ namespace Freelancer_Exam.Controllers
                 MinPrice = 10,
                 MaxPrice = 100,
                 Status = Status.Pending,  // WTF is this???
-                RequiredSkill = new Skill { SkillId = Guid.NewGuid().ToString(), Name = faker.Name.JobType() }
+                // RequiredSkill = new Skill { SkillId = Guid.NewGuid().ToString(), Name = faker.Name.JobType() }
             };
 
             //ownerService.AddRandomProject(project);
@@ -76,11 +76,11 @@ namespace Freelancer_Exam.Controllers
                 MinPrice = 10,
                 MaxPrice = 100,
                 Status = Status.Pending,  // WTF is this???
-                RequiredSkill = new Skill
-                {
-                    SkillId = Guid.NewGuid().ToString(),
-                    Name = faker.Name.JobType()
-                }
+                // RequiredSkill = new Skill
+                // {
+                //     SkillId = Guid.NewGuid().ToString(),
+                //     Name = faker.Name.JobType()
+                // }
             };
             var userId = "75a63a94-ec99-460b-b75f-04282a044035";
 

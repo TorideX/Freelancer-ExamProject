@@ -96,7 +96,7 @@ namespace Freelancer_Exam.Services.Concrete
         {
             return freelancerDb.Projects
                 .Include(t => t.Owner)
-                .Include(t => t.RequiredSkill)
+                .Include(t => t.ProjectSkill)
                 //.Include(t => t.Owner.User.Country)
                 .ToList();
         }
