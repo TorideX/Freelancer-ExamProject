@@ -71,11 +71,11 @@ namespace Freelancer_Exam.Controllers
 
             var project = new AddProjectViewModel
             {
-                Title = faker.Name.JobTitle(),
-                Description = faker.Name.JobDescriptor(),
-                MinPrice = 10,
-                MaxPrice = 100,
-                Status = Status.Pending,  // WTF is this???
+                // Title = faker.Name.JobTitle(),
+                // Description = faker.Name.JobDescriptor(),
+                // MinPrice = 10,
+                // MaxPrice = 100,
+                // Status = Status.Pending,  // WTF is this???
                 // RequiredSkill = new Skill
                 // {
                 //     SkillId = Guid.NewGuid().ToString(),

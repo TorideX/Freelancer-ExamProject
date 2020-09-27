@@ -14,8 +14,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace Freelancer_Exam.Controllers {
-    //[Authorize(Roles = "Developer")]
-    [Authorize]
+    [Authorize(Roles = "Developer")]
     public class DeveloperController : Controller {
         private readonly IFreelancerService _freelancerService;
         private readonly UserManager<User> _userManager;
@@ -87,8 +86,14 @@ namespace Freelancer_Exam.Controllers {
         }
 
         [HttpPost]
-        public async Task<IActionResult> UpdateSkills([FromQuery]string id, [FromBody] List<string> skill) {
-            _freelancerService.UpdateSkills(id,skill);
+        public async Task<IActionResult> AddSkill([FromBody] EditDeveloperSkillViewModel model) {
+            _freelancerService.AddSkill(model.DeveloperId,model.SkillName);
+            return Ok();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> RemoveSkill([FromBody] EditDeveloperSkillViewModel model) {
+            _freelancerService.RemoveSkill(model.DeveloperId, model.SkillName);
             return Ok();
         }
     }

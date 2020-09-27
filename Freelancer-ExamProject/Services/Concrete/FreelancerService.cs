@@ -57,41 +57,39 @@ namespace Freelancer_Exam.Services.Concrete
             return false;
         }
 
-        public void UpdateSkills(string dId, IEnumerable<string> skillNames) {
+        public void RemoveSkill(string dId, string skillName) {
             var developer = freelancerDb.Developers.FirstOrDefault(d => d.DeveloperId == dId);
-            if (developer == null) return;
-
-            var dbDeveloperSkills = freelancerDb.DeveloperSkills;
-            var dbSkills = freelancerDb.Skills;
-            freelancerDb.SaveChanges();
-
-            foreach (var skillName in skillNames) {
-
-                if (dbDeveloperSkills?.FirstOrDefault(ds =>
-                    ds.DeveloperId == developer.DeveloperId && ds.Skill.Name == skillName) != null) {
-                    continue;
-                }
-
-                var existSkill = dbSkills.FirstOrDefault(s => s.Name == skillName);
-                if (existSkill == null) { 
-                    existSkill = (freelancerDb.Skills.Add(new Skill {
-                        Name = skillName,
-                        SkillId = Guid.NewGuid().ToString(),
-                        DeveloperSkill = new List<DeveloperSkill>()
-                    })).Entity;
-                }
-
-                freelancerDb.DeveloperSkills.Add(new DeveloperSkill {
-                    Developer = developer,
-                    Skill = existSkill,
-                    DeveloperId = developer.DeveloperId,
-                    SkillId = existSkill.SkillId
-                });
-            }
-
+            var skill = freelancerDb?.Skills?.FirstOrDefault(s => s.Name == skillName);
+            if (developer == null || skill == null) return;
+            
+            var ds = freelancerDb?.DeveloperSkills.First(d =>
+                d.DeveloperId == developer.DeveloperId && d.SkillId == skill.SkillId);
+            if(ds == null) return;
+            freelancerDb?.Remove(ds);
             freelancerDb.SaveChanges();
         }
-        
+
+        public void AddSkill(string dId, string skillName) {
+            var developer = freelancerDb.Developers.FirstOrDefault(d => d.DeveloperId == dId);
+            if (developer == null) return;
+            var dbSkills = freelancerDb.Skills;
+            var existSkill = dbSkills.FirstOrDefault(s => s.Name == skillName);
+            if (existSkill == null) { 
+                existSkill = (freelancerDb.Skills.Add(new Skill {
+                    Name = skillName,
+                    SkillId = Guid.NewGuid().ToString(),
+                    DeveloperSkill = new List<DeveloperSkill>()
+                })).Entity;
+            }
+            freelancerDb.DeveloperSkills.Add(new DeveloperSkill {
+                Developer = developer,
+                Skill = existSkill,
+                DeveloperId = developer.DeveloperId,
+                SkillId = existSkill.SkillId
+            });
+            freelancerDb.SaveChanges();
+        }
+
         public List<Project> GetAllProjects()
         {
             return freelancerDb.Projects

@@ -15,12 +15,18 @@ namespace Freelancer_Exam.Controllers {
         
         [HttpGet]
         public async Task<IActionResult> Login() {
+            if (HttpContext.User.Identity.IsAuthenticated) {
+                return RedirectToAction("Index", "Home");
+            }
             return View();
         }
 
 
         [HttpGet]
         public async Task<IActionResult> Register() {
+            if (HttpContext.User.Identity.IsAuthenticated) {
+                return RedirectToAction("Index", "Home");
+            }
             return View();
         }
 
