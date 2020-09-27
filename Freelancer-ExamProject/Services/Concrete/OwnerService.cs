@@ -31,10 +31,43 @@ namespace Freelancer_Exam.Services.Concrete
             if (owner == null) return new List<Project>();
             return owner.Projects;
         }
+
+        private List<Skill> GetSkillsBySkillNames(List<string> skillNames)
+        {
+            var skills = new List<Skill>();
+            foreach (var item in skillNames)
+            {
+                var skill = freelancerDb.Skills.FirstOrDefault(t => t.Name == item);
+                if (skill == null)
+                {
+                    skill = new Skill { SkillId = Guid.NewGuid().ToString(), Name = item };
+                }
+                skills.Add(skill);
+            }
+            return skills;
+        }
+        private List<ProjectSkill> AddProjectSkillsBySkills(List<Skill> skills, Project project)
+        {
+            var projectSkills = new List<ProjectSkill>();
+            foreach (var item in skills)
+            {
+                var projectSkill = new ProjectSkill
+                {
+                    ProjectSkillId = Guid.NewGuid().ToString(),
+                    Project = project,
+                    Skill = item
+                };
+                projectSkills.Add(projectSkill);
+            }
+            return projectSkills;
+        }
+
         public bool AddProject(string userId, AddProjectViewModel project)
         {
             var owner = freelancerDb.Owners.FirstOrDefault(t => t.User.Id == userId);
             if (owner == null) return false;
+
+            var requiredSkills = GetSkillsBySkillNames(project.RequiredSkill);            
 
             var newProject = new Project
             {
@@ -44,9 +77,9 @@ namespace Freelancer_Exam.Services.Concrete
                 Title = project.Title,
                 MaxPrice = project.MaxPrice,
                 MinPrice = project.MinPrice,
-                // RequiredSkill = project.RequiredSkill,
                 Status = project.Status
             };
+            newProject.ProjectSkill = AddProjectSkillsBySkills(requiredSkills, newProject);
 
             freelancerDb.Projects.Add(newProject);
             freelancerDb.SaveChanges();

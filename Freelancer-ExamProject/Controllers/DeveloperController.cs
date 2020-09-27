@@ -14,7 +14,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace Freelancer_Exam.Controllers {
-    [Authorize(Roles = "Developer")]
+    //[Authorize(Roles = "Developer")]
+    [Authorize]
     public class DeveloperController : Controller {
         private readonly IFreelancerService _freelancerService;
         private readonly UserManager<User> _userManager;

@@ -14,7 +14,7 @@ namespace Freelancer_Exam.ViewModels
         [Required]
         public string Description { get; set; }
         [Required]
-        public virtual List<Skill> RequiredSkill { get; set; }
+        public List<string> RequiredSkill { get; set; }
         [Required]
         public double MinPrice { get; set; }
         [Required]

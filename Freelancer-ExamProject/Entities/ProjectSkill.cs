@@ -1,5 +1,6 @@
 namespace Freelancer_Exam.Entities {
     public class ProjectSkill {
+        public string ProjectSkillId { get; set; }
         public string ProjectId { get; set; }
         public string SkillId { get; set; }
         public Skill Skill { get; set; }

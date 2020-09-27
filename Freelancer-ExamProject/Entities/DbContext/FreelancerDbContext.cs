@@ -73,6 +73,7 @@ namespace Freelancer_Exam.Entities.Db_Context
             base.OnModelCreating(builder);
         }
         public DbSet<DeveloperSkill> DeveloperSkills { get; set; }
+        public DbSet<ProjectSkill> ProjectSkills { get; set; }
         public DbSet<Owner> Owners { get; set; }
         public DbSet<Developer> Developers { get; set; }
         public DbSet<Project> Projects { get; set; }

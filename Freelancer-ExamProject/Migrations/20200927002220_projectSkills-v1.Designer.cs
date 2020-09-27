@@ -4,14 +4,16 @@ using Freelancer_Exam.Entities.Db_Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Freelancer_Exam.Migrations
 {
     [DbContext(typeof(FreelancerDbContext))]
-    partial class FreelancerDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200927002220_projectSkills-v1")]
+    partial class projectSkillsv1
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
