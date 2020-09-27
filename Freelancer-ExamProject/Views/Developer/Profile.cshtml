@@ -69,7 +69,7 @@
             } else {
                 <img src="https://www.f-cdn.com/assets/main/en/assets/unknown.png" class="prof-photo" style="width: 100%" alt="">
             }
-            <input id="file" name="file" type="file" />
+            <input id="file" accept="image/x-png,image/gif,image/jpeg" name="file" type="file" />
             <button class="btn">
                 <i class="fa fa-upload"></i>
             </button>
@@ -134,7 +134,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button id="m-save-btn" type="button" class="btn btn-primary">Save</button>
+                    @* <button id="m-save-btn" type="button" class="btn btn-primary">Save</button> *@
                     <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
                 </div>
             </div>
@@ -176,46 +176,65 @@
  
 </script>
 <script>
+$(function() {
+    $('#file').on('change', function() {
+        $('#upload-form').submit();
+    });
 
-$(function (){
-    $('#file').on('change',function (){
-         $('#upload-form').submit();
-    });
-    
-    
-    $("#form-skill").on('submit',function (e){
+    function isEmptyOrSpaces(str) {
+        return str === null || str.match(/^ *$/) !== null;
+    }
+
+    $("#form-skill").on('submit', function(e) {
         e.preventDefault();
+        let duplicate = false;
         const newSkill = $('#newSkill').val();
-        const html = `<span class='badge badge-success user-select-none m-2'>${newSkill}<a href="#" class="m-1 remove-skill text-white"><i class='fa fa-close'></i></a></span>`;  
+        const spans = $("#field-skills").find("span");
+        for (const span of spans) {
+            if (span.innerText === newSkill) {
+                duplicate = true;
+            }
+        }
+        if (duplicate === false && isEmptyOrSpaces(newSkill) === false) {
+            const id = $('#developer-id').val();
+            const data = {
+                DeveloperId: id,
+                SkillName: newSkill
+            };
+            $.ajax(`/Developer/AddSkill`, {
+                method: "POST",
+                data: JSON.stringify(data),
+                contentType: "application/json; charset=utf-8",
+                success() {
+                    const html = `<span class='badge badge-success user-select-none m-2'>${newSkill}<a href="#" class="m-1 remove-skill text-white"><i class='fa fa-close'></i></a></span>`;
+                    $("#field-skills").append(html);
+                }
+            })
+        }
         $('#newSkill').val('');
-        $("#field-skills").append(html);
     });
-    
-    
-    $('#myModal').on('hidden.bs.modal',function (){
+
+
+    $('#myModal').on('hidden.bs.modal', function() {
         window.location.reload();
     })
-    
-    $('#field-skills').on('click', '.remove-skill',function (){
-         $(this).parent().remove();
-    })
-    
-    $('#m-save-btn').on('click',function (){
-        const spans = $('#field-skills').find("span");
-        const skillArray = [];
-        for (const span of spans) {
-           skillArray.push(span.innerText);
-        }
+
+    $('#field-skills').on('click', '.remove-skill', function() {
+        const skillName = $(this).parent().text();
         const id = $('#developer-id').val();
-        console.log(id);
-        $.ajax(`/Developer/UpdateSkills/?id=${id}`,{
-            method:"Post",
-            data : JSON.stringify(skillArray),
+        const data = {
+            DeveloperId: id,
+            SkillName: skillName
+        };
+        $.ajax(`/Developer/RemoveSkill`, {
+            method: "POST",
+            data: JSON.stringify(data),
             contentType: "application/json; charset=utf-8",
-            success(){
-                window.location.reload();
+            success() {
+               
             }
-        });
-    })
+        })
+         $(this).parent().remove();
+    });
 })
 </script>

@@ -76,9 +76,9 @@ namespace Freelancer_Exam.Services.Concrete
                 Owner = owner,
                 Description = project.Description,
                 Title = project.Title,
-                MaxPrice = project.MaxPrice,
-                MinPrice = project.MinPrice,
-                Status = project.Status
+                MaxPrice = double.Parse(project.MaxPrice),
+                MinPrice = double.Parse(project.MinPrice),
+                Status = Status.Pending
             };
             newProject.ProjectSkill = AddProjectSkillsBySkills(requiredSkills, newProject);
 

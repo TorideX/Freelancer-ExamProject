@@ -1,22 +1,29 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using Freelancer_Exam.Entities;
 using Freelancer_Exam.Entities.Db_Context;
+using Freelancer_Exam.Services.Abstract;
+using Freelancer_Exam.Services.Concrete;
 using Freelancer_Exam.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace Freelancer_Exam.Controllers {
+    [Authorize(Roles = "Owner")]
     public class OwnerController : Controller {
         private readonly UserManager<User> _userManager;
         private readonly FreelancerDbContext _freelancerDbContext;
-        public OwnerController(UserManager<User> userManager, FreelancerDbContext freelancerDbContext) {
+        private readonly IOwnerService _ownerService;
+        public OwnerController(UserManager<User> userManager, FreelancerDbContext freelancerDbContext, IOwnerService ownerService) {
             _userManager = userManager;
             _freelancerDbContext = freelancerDbContext;
+            _ownerService = ownerService;
         }
 
         [HttpPost]
@@ -30,33 +37,36 @@ namespace Freelancer_Exam.Controllers {
             await file.CopyToAsync(stream);
             return RedirectToAction("Profile", "Owner");
         }
+        
+        [HttpPost()]
+        public async Task<IActionResult> AddProject([FromRoute]string id, [FromBody] AddProjectViewModel model) {
+            var a = _ownerService.AddProject(id, model);
+            return Ok();
+        }
 
 
         [HttpGet]
         public async Task<IActionResult> Profile() {
             var user = await _userManager.GetUserAsync(HttpContext.User);
+            
             var owner = await _freelancerDbContext.Owners?
                 .Include(o => o.Projects)
                 .FirstOrDefaultAsync(o => o.User.Id == user.Id);
+            
             var projectList = new List<ProjectViewModel>();
             if (owner.Projects != null) {
-                foreach (var proj in owner.Projects) {
-                    projectList.Add(new ProjectViewModel {
-                        // RequiredSkill = new SkillViewModel {
-                        //     Name = proj.RequiredSkill.Name,
-                        //     SkillId = proj.RequiredSkill.SkillId
-                        // },
-                        Description = proj.Description,
-                        MaxPrice = proj.MaxPrice,
-                        MinPrice = proj.MinPrice,
-                        ProjectId = proj.ProjectId,
-                        Status = proj.Status,
-                        Title = proj.Title
-                    });
-                }
+                projectList.AddRange(owner.Projects.Select(proj => new ProjectViewModel {
+                    Description = proj.Description,
+                    MaxPrice = proj.MaxPrice,
+                    MinPrice = proj.MinPrice,
+                    ProjectId = proj.ProjectId,
+                    Status = proj.Status,
+                    Title = proj.Title
+                }));
             }
 
             var ownerViewModel = new OwnerViewModel {
+                Id = owner.OwnerId,
                 User = new UserViewModel {
                     ProfilePicture = owner.User.ProfilePicture,
                     JoinedDate = owner.User.JoinedDate.ToString("Y"),

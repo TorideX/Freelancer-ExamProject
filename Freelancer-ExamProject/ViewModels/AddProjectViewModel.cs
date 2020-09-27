@@ -16,10 +16,8 @@ namespace Freelancer_Exam.ViewModels
         [Required]
         public List<string> RequiredSkill { get; set; }
         [Required]
-        public double MinPrice { get; set; }
+        public string MinPrice { get; set; }
         [Required]
-        public double MaxPrice { get; set; }
-        [Required]
-        public Status Status { get; set; }
+        public string MaxPrice { get; set; }
     }
 }

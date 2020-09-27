@@ -33,11 +33,18 @@ namespace Freelancer_Exam
             services.AddTransient<IHomeService, HomeService>();
             services.AddTransient<IFreelancerService, FreelancerService>();
             services.AddDbContext<FreelancerDbContext>(opt => opt.UseSqlServer(Configuration.GetConnectionString("Default")));
+            services.AddTransient<IOwnerService, OwnerService>();
             services.AddIdentity<User, Role>()
                 .AddEntityFrameworkStores<FreelancerDbContext>()
                 .AddDefaultTokenProviders();
             services.AddAuthentication();
-
+            services.Configure<IdentityOptions>(opts => {
+                opts.Password.RequireDigit = false;
+                opts.Password.RequiredLength = 4;
+                opts.Password.RequireLowercase = false;
+                opts.Password.RequireUppercase = false;
+                opts.Password.RequireNonAlphanumeric = false;
+            });
             services.AddHttpContextAccessor();
         }
 
