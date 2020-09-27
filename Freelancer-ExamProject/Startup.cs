@@ -30,6 +30,7 @@ namespace Freelancer_Exam
             services.AddControllersWithViews();
             services.AddTransient<IAccountService, AccountService>();
             services.AddTransient<IOwnerService, OwnerService>();
+            services.AddTransient<IHomeService, HomeService>();
             services.AddTransient<IFreelancerService, FreelancerService>();
             services.AddDbContext<FreelancerDbContext>(opt => opt.UseSqlServer(Configuration.GetConnectionString("Default")));
             services.AddIdentity<User, Role>()

@@ -46,6 +46,7 @@ namespace Freelancer_Exam.Services.Concrete
             }
             return skills;
         }
+
         private List<ProjectSkill> AddProjectSkillsBySkills(List<Skill> skills, Project project)
         {
             var projectSkills = new List<ProjectSkill>();
@@ -85,6 +86,7 @@ namespace Freelancer_Exam.Services.Concrete
             freelancerDb.SaveChanges();
             return true;
         }
+
         public bool AcceptBidRequest(string userId, string requestId)
         {
             var owner = freelancerDb.Owners.FirstOrDefault(t => t.OwnerId == userId);

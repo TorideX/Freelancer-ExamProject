@@ -1,37 +1,32 @@
-﻿using System;
+﻿using Freelancer_Exam.Services.Abstract;
+using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using Freelancer_Exam.Models;
 
 namespace Freelancer_Exam.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
-
-        public HomeController(ILogger<HomeController> logger)
+        private readonly IHomeService homeService;
+        public HomeController(IHomeService homeService)
         {
-            _logger = logger;
+            this.homeService = homeService;
         }
 
+        [HttpGet]
         public IActionResult Index()
         {
-            return View();
+            var projects = homeService.GetAllProjects();
+            return View(projects);
         }
-
-        public IActionResult Privacy()
+        [HttpGet]
+        public IActionResult ProjectDetails([FromQuery]string projectId)
         {
-            return View();
-        }
-
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            var projectDetails = homeService.GetProjectById(projectId);
+            if (projectDetails == null) return Content("<h1>Invalid Request</h1>", "text/html");
+            return View(projectDetails);
         }
     }
 }

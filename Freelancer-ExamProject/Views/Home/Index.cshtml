@@ -1,8 +1,36 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿@model List<Project>
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<input class="form-control mt-3 mb-5" type="text" placeholder="Search" aria-label="Search">
+<hr />
+<div class="list-group">
+    @if (Model.Count == 0)
+    {
+        <h5>There's no Project for you right now</h5>
+    }
+    else
+    {
+        @foreach (var item in Model)
+        {
+            <a href="/Home/ProjectDetails?projectId=@item.ProjectId" class="list-group-item list-group-item-action flex-column align-items-start mb-2">
+                <div class="d-flex w-100 justify-content-between">
+                    <h5 class="mb-1">@item.Title</h5>
+                    <small>@item.MinPrice$ - @item.MaxPrice$</small>
+                </div>
+                <p class="mb-1">@item.Description</p>
+                <small>
+                    <b>Required Skills: </b>
+                    @foreach (var itm in item.ProjectSkill)
+                    {
+                        @itm.Skill.Name<text>, </text>
+                    }
+                </small>
+            </a>
+        }
+    }
 </div>
+<hr />
+

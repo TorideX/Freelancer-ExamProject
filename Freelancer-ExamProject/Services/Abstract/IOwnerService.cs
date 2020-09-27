@@ -11,5 +11,10 @@ namespace Freelancer_Exam.Services.Abstract
     {
         bool AddProject(string userId, AddProjectViewModel project);
         List<Project> GetProjects(string userId);
+        bool AcceptBidRequest(string userId, string requestId);
+        List<BidRequest> GetAllBidRequests(string userId);
+        List<BidRequest> GetBidRequestsByProject(string userId, string projectId);
+        List<ConfirmedRequest> GetConfirmedRequests(string userId);
+        bool RateDeveloper(string userId, string requestId, short rating);
     }
 }

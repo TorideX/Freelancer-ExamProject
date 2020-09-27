@@ -91,14 +91,5 @@ namespace Freelancer_Exam.Services.Concrete
 
             freelancerDb.SaveChanges();
         }
-        
-        public List<Project> GetAllProjects()
-        {
-            return freelancerDb.Projects
-                .Include(t => t.Owner)
-                .Include(t => t.ProjectSkill)
-                //.Include(t => t.Owner.User.Country)
-                .ToList();
-        }
     }
 }

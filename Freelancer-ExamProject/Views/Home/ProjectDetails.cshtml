@@ -1,0 +1,28 @@
+﻿@model ProjectDetailsDTO
+@{
+    ViewData["Title"] = "ProjectDetails";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<a href="#" class="list-group-item list-group-item-action flex-column align-items-start mb-2">
+    <div class="d-flex w-100 justify-content-between">
+        <h5 class="mb-1">@Model.Project.Title</h5>
+        <small>@Model.Project.MinPrice$ - @Model.Project.MaxPrice$</small>
+    </div>
+    <p class="mb-1">@Model.Project.Description</p>
+    <small>
+        <b>Required Skills: </b>
+        @foreach (var itm in Model.Project.ProjectSkill)
+        {
+            @itm.Skill.Name<text>, </text>
+        }
+    </small>
+</a>
+
+<hr />
+
+@foreach (var item in Model.BidRequests)
+{
+    <p>@item.Developer.User.Name @item.Developer.User.Name</p>
+    <p>@item.Note</p>
+}
