@@ -20,11 +20,14 @@ namespace Freelancer_Exam.Services.Concrete
             this.freelancerDb = freelancerDb;
         }
 
-        public bool CreateBidRequest(string userId, CreateBidRequestViewModel requestModel)
+        public bool CreateBidRequest(CreateBidRequestViewModel requestModel)
         {
-            var dev = freelancerDb.Developers.FirstOrDefault(t => t.DeveloperId == userId);
+            var dev = freelancerDb.Developers.FirstOrDefault(t => t.DeveloperId == requestModel.DeveloperId);
             var project = freelancerDb.Projects.FirstOrDefault(t => t.ProjectId == requestModel.ProjectId);
             if (dev == null || project == null) return false;
+
+            var isExist = freelancerDb.BidRequests.Any(t => t.Developer.DeveloperId == requestModel.DeveloperId && t.Project.ProjectId == requestModel.ProjectId);
+            if (isExist) return false;
 
             var bidRequest = new BidRequest
             {
@@ -33,7 +36,7 @@ namespace Freelancer_Exam.Services.Concrete
                 Developer = dev,
                 Project = project,
                 Note = requestModel.Note,
-                Price = requestModel.Price,
+                Price = Convert.ToDouble(requestModel.Price),
                 DaysToFinish = requestModel.DaysToFinish,
                 RequestStatus = RequestStatus.Pending
             };

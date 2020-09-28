@@ -111,11 +111,11 @@ namespace Freelancer_Exam.Controllers
 
             var project = new AddProjectViewModel
             {
-                Title = faker.Name.JobTitle(),
-                Description = faker.Name.JobDescriptor(),
-                MinPrice = 10,
-                MaxPrice = 100,
-                Status = Status.Pending,  // WTF is this???
+                //Title = faker.Name.JobTitle(),
+                //Description = faker.Name.JobDescriptor(),
+                //MinPrice = 10,
+                //MaxPrice = 100,
+                //Status = Status.Pending,  // WTF is this???
                 RequiredSkill = new List<string>
                 {
                     faker.Company.CompanySuffix(),
@@ -197,10 +197,10 @@ namespace Freelancer_Exam.Controllers
                 BidRequestId = Guid.NewGuid().ToString(),
                 CreationDate = faker.Date.Recent(),
                 DaysToFinish = faker.Random.Int(1,300),
-                Price = faker.Random.Int(10,10000),
+                Price = faker.Random.Int(10,1000),
                 Project = project,
                 RequestStatus = RequestStatus.Pending,
-                Note = faker.Lorem.Letter(),
+                Note = faker.Lorem.Sentences(),
                 Developer = developer
             };
 

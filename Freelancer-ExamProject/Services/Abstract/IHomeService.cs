@@ -1,5 +1,6 @@
 ﻿using Freelancer_Exam.DTOs;
 using Freelancer_Exam.Entities;
+using Freelancer_Exam.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,5 +12,7 @@ namespace Freelancer_Exam.Services.Abstract
     {
         List<Project> GetAllProjects();
         ProjectDetailsDTO GetProjectById(string projectId);
+        UserType GetUserType(string userId);
+        List<Project> GetProjectsBySearch(string search);
     }
 }

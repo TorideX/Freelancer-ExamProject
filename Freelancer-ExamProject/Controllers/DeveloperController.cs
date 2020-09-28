@@ -86,6 +86,18 @@ namespace Freelancer_Exam.Controllers {
         }
 
         [HttpPost]
+        [AllowAnonymous]
+        public IActionResult AddBidRequest([FromBody] CreateBidRequestViewModel requestModel)
+        {
+            try
+            {
+                var response = _freelancerService.CreateBidRequest(requestModel);
+            }
+            catch { }
+            return RedirectToAction("ProjectDetails", "Home", new { projectId = requestModel.ProjectId });
+        }
+
+        [HttpPost]
         public async Task<IActionResult> AddSkill([FromBody] EditDeveloperSkillViewModel model) {
             _freelancerService.AddSkill(model.DeveloperId,model.SkillName);
             return Ok();

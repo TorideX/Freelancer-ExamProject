@@ -7,8 +7,9 @@ namespace Freelancer_Exam.ViewModels
 {
     public class CreateBidRequestViewModel
     {
+        public string DeveloperId { get; set; }
         public string ProjectId { get; set; }
-        public double Price { get; set; }
+        public string Price { get; set; }
         public string Note { get; set; }
         public int DaysToFinish { get; set; }
     }

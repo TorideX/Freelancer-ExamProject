@@ -11,7 +11,7 @@ namespace Freelancer_Exam.Services.Abstract
     {
         void RemoveSkill(string dId, string skillName);
         void AddSkill(string dId, string skillName);
-        bool CreateBidRequest(string userId, CreateBidRequestViewModel requestModel);
+        bool CreateBidRequest(CreateBidRequestViewModel requestModel);
         bool CompleteProject(string userId, string requestId);
     }
 }

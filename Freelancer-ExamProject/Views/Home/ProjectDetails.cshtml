@@ -4,25 +4,179 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<a href="#" class="list-group-item list-group-item-action flex-column align-items-start mb-2">
-    <div class="d-flex w-100 justify-content-between">
-        <h5 class="mb-1">@Model.Project.Title</h5>
-        <small>@Model.Project.MinPrice$ - @Model.Project.MaxPrice$</small>
+<div class="media g-mb-30 media-comment">
+    @if (string.IsNullOrWhiteSpace(Model.Project.Owner.User.ProfilePicture))
+    {
+        <img class="d-flex img-circle img-responsive g-mt-3 g-mr-15 mt-5" src="https://bootdey.com/img/Content/avatar/avatar7.png" width="70" height="70" alt="Owner">
+    }
+    else
+    {
+        <img class="d-flex img-circle img-responsive g-mt-3 g-mr-15 mt-5" src="@Model.Project.Owner.User.ProfilePicture" width="70" height="70" alt="Owner">
+    }
+    <div class="media-body u-shadow-v18 g-bg-secondary g-pa-30">
+        <div class="g-mb-15">
+            <h4 class="h5 g-color-gray-dark-v1 mb-0"><b>@Model.Project.Title</b></h4>
+            <span class="g-color-gray-dark-v4 g-font-size-14">
+                @Model.Project.Owner.User.Name @Model.Project.Owner.User.Surname
+                <small>
+                    <b>Required Skills: </b>
+                    @foreach (var itm in Model.Project.ProjectSkill)
+                    {
+                        @itm.Skill.Name<text>, </text>
+                    }
+                </small>
+                | Price: @Model.Project.MinPrice$-@Model.Project.MaxPrice$
+            </span>
+        </div>
+
+        <p>
+            @Model.Project.Description
+        </p>
+
+        <ul class="list-inline d-sm-flex my-0">
+            <li class="list-inline-item g-mr-20">
+                <a class="u-link-v5 g-color-gray-dark-v4 g-color-primary--hover" href="#bid-requests">
+                    <i class="fa fa-comment g-pos-rel g-top-1 g-mr-3"></i>
+                    Requests
+                </a>
+            </li>
+
+            @if(Model.UserType == UserType.Developer)
+            {
+                <li class="list-inline-item ml-auto">
+                    <a class="u-link-v5 g-color-gray-dark-v4 g-color-primary--hover" data-toggle="modal" data-target="#myModal" href="">
+                        <i class="fa fa-reply g-pos-rel g-top-1 g-mr-3"></i>
+                        Add Request
+                    </a>
+                </li>
+            }
+        </ul>
     </div>
-    <p class="mb-1">@Model.Project.Description</p>
-    <small>
-        <b>Required Skills: </b>
-        @foreach (var itm in Model.Project.ProjectSkill)
-        {
-            @itm.Skill.Name<text>, </text>
-        }
-    </small>
-</a>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="myModal" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-header">
+        </div>
+        <div class="modal-content">
+            <form class="text-center border border-light p-5" action="">
+                <p class="h4 mb-4">Bid Request</p>
+                <hr />
+                <div class="form-row mb-4">
+                    <div class="col">
+                        <input type="text" id="form-price" class="form-control" placeholder="Price">
+                    </div>
+                    <div class="col">
+                        <input type="text" id="form-days" class="form-control" placeholder="Days to finish">
+                    </div>
+                </div>
+
+                <input type="text" id="form-note" class="form-control mb-4" placeholder="Note">
+
+                <button type="button" id="form-button" class="btn btn-success btn-lg btn-block">Add Request</button>
+            </form>
+        </div>
+
+    </div>
+</div>
 
 <hr />
 
-@foreach (var item in Model.BidRequests)
-{
-    <p>@item.Developer.User.Name @item.Developer.User.Name</p>
-    <p>@item.Note</p>
-}
+<div id="bid-requests" class="container mt-4 mb-5">
+    <div class="row">
+        <div class="panel panel-default widget">
+            <div class="panel-heading">
+                <span class="glyphicon glyphicon-comment"></span>
+                <h3 class="panel-title">
+                    Bid Requests
+                </h3>
+                <span class="label label-info">
+                    Total @Model.BidRequests.Count requests
+                </span>
+            </div>
+            <div class="panel-body">
+                <ul class="list-group">
+                    @foreach (var item in Model.BidRequests)
+                    {
+                        <li class="list-group-item">
+                            <div class="row">
+                                <div class="col-xs-2 col-md-1">
+                                    @if (string.IsNullOrWhiteSpace(item.Developer.User.ProfilePicture))
+                                    {
+                                        <img src="http://placehold.it/80" class="img-circle img-responsive" alt="ProfilePic" />
+                                    }
+                                    else
+                                    {
+                                        <img src="@item.Developer.User.ProfilePicture" class="img-circle img-responsive" alt="ProfilePic" />
+                                    }
+                                </div>
+                                <div class="col-xs-10 col-md-11">
+                                    <div>
+                                        <a href="">@item.Developer.User.Name @item.Developer.User.Surname</a>
+
+                                        <div class="mic-info">
+                                            Price: @item.Price$  |  Complete after @item.DaysToFinish days | Created on @item.CreationDate.ToLongDateString()
+                                        </div>
+                                        <div class="mic-info">
+                                            Status: <i>@item.RequestStatus.ToString()</i>
+                                        </div>
+                                    </div>
+                                    <div class="comment-text">
+                                        @item.Note
+                                    </div>
+                                    @if (Model.UserType == UserType.Developer && item.Developer.DeveloperId == Model.UserId)
+                                    {
+                                        <div class="action">
+                                            <button type="button" class="btn btn-primary btn-xs" title="Edit">
+                                                <span class="glyphicon glyphicon-pencil"></span>
+                                            </button>
+                                            <button type="button" class="btn btn-success btn-xs" title="Approved">
+                                                <span class="glyphicon glyphicon-ok"></span>
+                                            </button>
+                                            <button type="button" class="btn btn-danger btn-xs" title="Delete">
+                                                <span class="glyphicon glyphicon-trash"></span>
+                                            </button>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        </li>
+                    }
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+<br />
+
+<script>
+    $("#form-button").click(async e => {
+        let price = $("#form-price").val();
+        let days = $("#form-days").val();
+        let note = $("#form-note").val();
+        let developerId = "@Model.UserId";
+        let projectId = "@Model.Project.ProjectId";
+
+        if (price == "" || days == "" || note == "") return;
+
+        var response = await fetch("/Developer/AddBidRequest", {
+            method: "Post",
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            redirect: 'follow',
+            body: JSON.stringify({
+                DeveloperId: developerId,
+                ProjectId: projectId,
+                Price: price,
+                DaysToFinish: Number.parseInt(days),
+                Note: note
+            })
+        });
+        console.log(response);
+        if (response.redirected) {
+            window.location.replace(response.url);
+        }
+    });
+</script>
