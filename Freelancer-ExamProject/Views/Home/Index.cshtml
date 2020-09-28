@@ -1,9 +1,12 @@
-﻿@model List<Project>
+﻿@model Freelancer_Exam.ViewModels.ListProjectVm
 @{
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-
+    <link rel="stylesheet" href="~/css/site.css" />
+    <link rel="stylesheet" href="~/css/homeExtra.css" />
+ <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+ 
 <form asp-action="Index" asp-controller="Home" method="get" class="example">
     <input id="search-input" type="text" placeholder="Search" name="search" aria-label="Search">
     <button type="submit"><i class="fa fa-search"></i></button>
@@ -11,13 +14,13 @@
 
 <hr />
 <div class="list-group">
-    @if (Model.Count == 0)
+    @if (Model.Project.Count == 0)
     {
         <h5>There's no Project for you right now</h5>
     }
     else
     {
-        @foreach (var item in Model)
+        @foreach (var item in Model.Project)
         {
             <a href="/Home/ProjectDetails?projectId=@item.ProjectId" class="list-group-item list-group-item-action flex-column align-items-start mb-2">
                 <div class="d-flex w-100 justify-content-between">
@@ -37,7 +40,19 @@
     }
 </div>
 <hr />
-
+<div class="row mt-lg-3 p-3">
+    @for (int i = 1; i <= Model.PagingModel.PageCount; i++) {
+        if (i != Model.PagingModel.CurrentPageIndex) {
+            <a href="/Home/Index/?currentPage=@i&search=@Model.SearchKeyword" class="btn btn-danger m-1">@i</a>
+        }
+        else {
+            <a class="btn btn-info m-1">@i</a>
+        }
+    }
+</div>
+<script src="~/js/site.js" asp-append-version="true"></script>
+   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 <script>
     //$("#search-btn").click(async e => {
     //    let search = $("#search-input").val();

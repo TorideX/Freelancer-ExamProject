@@ -9,16 +9,11 @@
     <title>@ViewData["Title"] - Freelancer_Exam</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" />
-    <link rel="stylesheet" href="~/css/homeExtra.css" />
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 </head>
 <body>
 <header>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <a class="navbar-brand" href="#">
+        <a class="navbar-brand" href="/Home/Index">
             Freelancer
         </a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
@@ -28,21 +23,40 @@
 
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav mr-auto">
-                <li class="nav-item active">
-                    <a class="nav-link" href="#">My Projects <span class="sr-only">(current)</span></a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Messages</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Updates</a>
-                </li>
+                @if (User.Identity.IsAuthenticated) {
+                    @if (User.IsInRole("Developer")) {
+                        <li class="nav-item">
+                            <a class="nav-link" href="/Developer/Profile">Profile</a>
+                        </li>
+                    }
+                    else {
+                        <li class="nav-item">
+                            <a class="nav-link" href="/Owner/Profile">Profile</a>
+                        </li>
+                    }
+                }
             </ul>
-            @if (User.Identity.IsAuthenticated) {
-                <a class="btn btn-outline-primary" asp-action="Logout" asp-controller="Account">
-                    Logout
-                </a>
-            }
+            <ul class="navbar-nav">
+                @if (User.Identity.IsAuthenticated) {
+                    <li>
+                        <a class="btn btn-primary" asp-action="Logout" asp-controller="Account">
+                            Logout
+                        </a>
+                    </li>
+                }
+                else {
+                    <li class="nav-item">
+                        <a class="btn btn-primary p-3 m-2" asp-action="Login" asp-controller="Account">
+                            Login
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="btn btn-primary p-3 m-2" asp-action="Register" asp-controller="Account">
+                            Register
+                        </a>
+                    </li>
+                }
+            </ul>
         </div>
     </nav>
 </header>
@@ -52,14 +66,9 @@
     </main>
 </div>
 
-<footer class="border-top footer text-muted">
-    <div class="container">
-        &copy; 2020 - Freelancer_Exam - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-    </div>
-</footer>
 <script src="~/lib/jquery/dist/jquery.min.js"></script>
 <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-<script src="~/js/site.js" asp-append-version="true"></script>
+
 @await RenderSectionAsync("Scripts", false)
 </body>
 </html>

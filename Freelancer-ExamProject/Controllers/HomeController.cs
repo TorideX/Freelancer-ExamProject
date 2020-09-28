@@ -22,12 +22,26 @@ namespace Freelancer_Exam.Controllers
         }
 
         [HttpGet]
-        public IActionResult Index(string search)
+        public IActionResult Index(string search,int currentPage = 1)
         {
             List<Project> projects = null;
             if (search == null) projects = homeService.GetAllProjects();
             else projects = homeService.GetProjectsBySearch(search);
-            return View(projects);
+
+            var maxRows = 4;
+            int count = projects.Count;
+            
+            projects =  (from proj in projects select proj)
+                .OrderBy(proj => proj.Title)
+                .Skip((currentPage - 1) * maxRows)
+                .Take(maxRows).ToList();
+            
+            var projModel = new ListProjectVm() {PagingModel = new PagingModel(), Project = projects};
+            double pageCount = (double)(count / Convert.ToDecimal(maxRows));
+            projModel.PagingModel.PageCount = (int)Math.Ceiling(pageCount);
+            projModel.PagingModel.CurrentPageIndex = currentPage;
+            projModel.SearchKeyword = search;
+            return View(projModel);
         }
 
         [HttpGet]

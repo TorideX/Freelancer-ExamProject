@@ -3,7 +3,9 @@
     ViewData["Title"] = "ProjectDetails";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-
+ <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+<link rel="stylesheet" href="~/css/site.css" />
+<link rel="stylesheet" href="~/css/homeExtra.css" />
 <div class="media g-mb-30 media-comment">
     @if (string.IsNullOrWhiteSpace(Model.Project.Owner.User.ProfilePicture))
     {
@@ -149,7 +151,9 @@
     </div>
 </div>
 <br />
-
+ <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+<script src="~/js/site.js" asp-append-version="true"></script>
 <script>
     $("#form-button").click(async e => {
         let price = $("#form-price").val();

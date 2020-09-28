@@ -41,7 +41,7 @@ namespace Freelancer_Exam.Controllers {
             if (ModelState.IsValid) {
                 var result = await _accountService.SignIn(model);
                 if (result.Success) {
-                    return RedirectToAction("Profile","Developer"); // temp
+                    return RedirectToAction("Index","Home"); 
                 }
             }
 
