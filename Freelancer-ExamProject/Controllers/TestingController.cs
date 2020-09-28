@@ -200,6 +200,7 @@ namespace Freelancer_Exam.Controllers
                 Price = faker.Random.Int(10,1000),
                 Project = project,
                 RequestStatus = RequestStatus.Pending,
+
                 Note = faker.Lorem.Sentences(),
                 Developer = developer
             };

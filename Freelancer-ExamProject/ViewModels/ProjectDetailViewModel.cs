@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using Freelancer_Exam.Entities;
 
 namespace Freelancer_Exam.ViewModels {
-    public class ProjectViewModel {
+    public class ProjectDetailViewModel {
         public string ProjectId { get; set; }
         public OwnerViewModel OwnerViewModel { get; set; }
         public string Title { get; set; }
@@ -11,5 +11,6 @@ namespace Freelancer_Exam.ViewModels {
         public double MinPrice { get; set; }
         public double MaxPrice { get; set; }
         public Status Status { get; set; }
+        public List<BidRequestViewModel> BidRequestViewModels { get; set; }
     }
 }

@@ -10,9 +10,10 @@ namespace Freelancer_Exam.Services.Abstract
     public interface IOwnerService
     {
         bool AddProject(string userId, AddProjectViewModel project);
-        List<Project> GetProjects(string userId);
+        List<Project> GetProjects(string ownerId);
+        Owner GetOwnerById(string uId);
         bool AcceptBidRequest(string userId, string requestId);
-        List<BidRequest> GetAllBidRequests(string userId);
+        List<BidRequest> GetAllBidRequests(string ownerId);
         List<BidRequest> GetBidRequestsByProject(string userId, string projectId);
         List<ConfirmedRequest> GetConfirmedRequests(string userId);
         bool RateDeveloper(string userId, string requestId, short rating);
