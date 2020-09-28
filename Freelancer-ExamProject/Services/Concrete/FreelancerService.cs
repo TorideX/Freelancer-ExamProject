@@ -45,16 +45,32 @@ namespace Freelancer_Exam.Services.Concrete
         public bool CompleteProject(string userId, string requestId)
         {
             var dev = freelancerDb.Developers.FirstOrDefault(t => t.DeveloperId == userId);
+            
             var confirmedRequest = freelancerDb.ConfirmedRequests
-                .Include(t => t.BidRequest.Project)
-                .Include(t => t.BidRequest.Developer)
-                .FirstOrDefault(t => t.ConfirmedRequestId == requestId);
+                .Include(t => t.BidRequest)
+                .ThenInclude(br => br.Project)
+                .Include(t => t.BidRequest)
+                .ThenInclude(br => br.Developer)
+                .FirstOrDefault(t => t.BidRequest.BidRequestId == requestId);
             if (dev == null || confirmedRequest == null) return false;
             if (confirmedRequest.BidRequest.Developer != dev) return false;
 
             confirmedRequest.BidRequest.Project.Status = Status.Completed;
             freelancerDb.SaveChanges();
-            return false;
+            return true;
+        }
+
+        public Developer GetDeveloperByUserId(string uId) {
+            var developer = freelancerDb.Developers?
+                .Include(d => d.DeveloperSkill)
+                .ThenInclude(ds => ds.Skill)
+                .Include(d => d.User)
+                .Include(d => d.BidRequests)
+                .ThenInclude(br => br.Project)
+                .ThenInclude(p => p.Owner)
+                .ThenInclude(o => o.User)
+                .FirstOrDefault(d => d.User.Id == uId);
+            return developer;
         }
 
         public void RemoveSkill(string dId, string skillName) {

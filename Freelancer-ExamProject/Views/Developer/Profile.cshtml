@@ -1,5 +1,5 @@
 @using Freelancer_Exam.Entities
-@model Freelancer_Exam.ViewModels.DeveloperViewModel
+@model Freelancer_Exam.ViewModels.devProfVm
 
 <style>
      .prof-photo {
@@ -64,8 +64,8 @@
     <div class="col-md-3">
         <form class="img-container" id="upload-form" enctype="multipart/form-data" method="post"
               asp-action="UploadProfilePhoto" asp-controller="Developer">
-            @if (Model.User.ProfilePicture != null) {
-                <img src="@Url.Content(Model.User.ProfilePicture)" class="prof-photo" style="width: 100%" alt="">
+            @if (Model.Developer.User.ProfilePicture != null) {
+                <img src="@Url.Content(Model.Developer.User.ProfilePicture)" class="prof-photo" style="width: 100%" alt="">
             } else {
                 <img src="https://www.f-cdn.com/assets/main/en/assets/unknown.png" class="prof-photo" style="width: 100%" alt="">
             }
@@ -75,16 +75,16 @@
             </button>
         </form>
         <br/>
-        <p>@Model.User.Country</p>
-        <p>Joined @Model.User.JoinedDate</p>
+        <p class="text-dark">Country: <span class="text-black-50">@Model.Developer.User.Country</span></p>
+        <p class="text-dark">Joined: <span class="text-black-50">@Model.Developer.User.JoinedDate.ToString("yyyy MMMM dd")</span></p>
     </div>
     <div class="col-md-5 ml-lg-5">
         <div>
             <div class="d-flex">
-                <input type="hidden" value="@Model.Id" id="developer-id" />
-                <h3 class="mr-1">@Model.User.Name</h3>
+                <input type="hidden" value="@Model.Developer.DeveloperId" id="developer-id" />
+                <h3 class="mr-1">@Model.Developer.User.Name @Model.Developer.User.Surname</h3>
             </div>
-            <a style="font-size: 20px;" class="text-muted">@Model.User.Email</a>
+            <a style="font-size: 20px;" class="text-muted">@Model.Developer.User.Email</a>
         </div>
     </div>
     <div class="col-md-3">
@@ -98,9 +98,9 @@
             <div>
                 <hr/>
                 <div class='d-flex flex-wrap'>
-                    @if (Model.DeveloperSkillViewModel != null) {
-                        @foreach (var skill in Model.DeveloperSkillViewModel) {
-                            <span class='badge badge-success user-select-none m-2'>@skill.SkillViewModel.Name</span>
+                    @if (Model.Developer.DeveloperSkill != null) {
+                        @foreach (var skill in Model.Developer.DeveloperSkill) {
+                            <span class='badge badge-success user-select-none m-2'>@skill.Skill.Name</span>
                         }
                     }
                 </div>
@@ -126,9 +126,9 @@
                     <hr/>
 
                     <div id="field-skills" class='d-flex flex-wrap'>
-                        @if (Model.DeveloperSkillViewModel != null) {
-                            @foreach (var skill in Model.DeveloperSkillViewModel) {
-                                <span class='badge badge-success user-select-none m-2'>@skill.SkillViewModel.Name<a href="#" class="m-1 remove-skill text-white"><i class='fa fa-close'></i></a></span>
+                        @if (Model.Developer.DeveloperSkill != null) {
+                            @foreach (var skill in Model.Developer.DeveloperSkill) {
+                                <span class='badge badge-success user-select-none m-2'>@skill.Skill.Name<a href="#" class="m-1 remove-skill text-white"><i class='fa fa-close'></i></a></span>
                             }
                         }
                     </div>
@@ -142,33 +142,52 @@
         </div>
     </div>
 
-<div class="row p-3 d-flex justify-content-start">
+<div class="row p-3 d-flex w-100 justify-content-between">
     
-    @if (Model.BidRequests != null) {
-        @foreach (var bidRequest in Model.BidRequests) {
-            <div class="card m-3" style="width: 18rem;">
+    @if (Model.Developer.BidRequests != null) {
+        @foreach (var bidRequest in Model.Developer.BidRequests) {
+            <div class="card m-3 col-md-12 justify-content-center" style="width: 18rem;">
                 <div class="card-body">
                     <h5 class="card-title text-success">@bidRequest.Project.Title</h5>
                     <p class="card-text">Project Description</p>
-                    <span class="text-sm-left small text-black-50">Owner : <span>@bidRequest.Project.Owner.User.Name</span></span>
+                    <span class="text-sm-left small text-black-50">Owner : <span>@bidRequest.Project.Owner.User.Name @bidRequest.Project.Owner.User.Surname</span></span>
                     <br>
-                    <span class="text-sm-left small text-black-50">Creation Date: <span>@bidRequest.CreationDate</span></span>
+                    <span class="text-sm-left small text-black-50">Request Date: <span>@bidRequest.CreationDate.ToString("f")</span></span>
                     <br>
                     <span class="text-sm-left small text-black-50">DaysToFinish : <span>@bidRequest.DaysToFinish</span></span>
                     <hr/>
-                    @switch (bidRequest.Project.Status) {
-                        case Status.Pending:
+                    @switch (bidRequest.RequestStatus) {
+                        case RequestStatus.Rejected:
+                            <span class="text-danger">Rejected</span>
+                            break;
+                        case RequestStatus.Pending:
                             <span class="text-warning">Pending</span>
                             break;
-                        case Status.Working:
-                            <span class="text-success">Completed</span>
+                        case RequestStatus.Confirmed:
+                            @if (@bidRequest.Project.Status == Status.Completed) {
+                                <span class="text-success">Confirmed and Completed</span>
+                            }
+                            else if (@bidRequest.Project.Status != Status.Completed) {
+                                <span class="text-success">Confirmed</span>
+                                <br/>
+                                <a href="/Developer/CompleteProject/?userId=@Model.Developer.DeveloperId&requestId=@bidRequest.BidRequestId">Completed</a>
+                            }
                             break;
-                        case Status.Completed:
-                            <span class="text-info">Working</span>
-                            break;
+                        default:
+                            throw new ArgumentOutOfRangeException();
                     }
                 </div>
             </div>
+        }
+    }
+</div>
+<div class="row mt-lg-3 p-3">
+    @for (int i = 1; i <= Model.PagingModel.PageCount; i++) {
+        if (i != Model.PagingModel.CurrentPageIndex) {
+            <a href="/Developer/Profile/?currentPage=@i" class="btn btn-danger m-1">@i</a>
+        }
+        else {
+            <a class="btn btn-info m-1">@i</a>
         }
     }
 </div>

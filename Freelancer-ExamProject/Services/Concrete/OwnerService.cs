@@ -5,9 +5,7 @@ using Freelancer_Exam.ViewModels;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace Freelancer_Exam.Services.Concrete
 {
@@ -20,12 +18,29 @@ namespace Freelancer_Exam.Services.Concrete
             this.freelancerDb = freelancerDb;
         }
 
+        public Owner GetOwnerById(string uId) {
+            var owner = freelancerDb.Owners
+                .Include(o => o.Projects)
+                .ThenInclude(p => p.ProjectSkill)
+                .ThenInclude(ps => ps.Skill)
+                .Include(o => o.User)
+                .FirstOrDefault(o => o.OwnerId == uId);
+            return owner;
+        }
+
+        public List<BidRequest> GetProjectBidRequests(string projId) {
+            var proj = freelancerDb.Projects.FirstOrDefault(p => p.ProjectId == projId);
+            var bidRequests = freelancerDb.BidRequests.Where(br => br.Project.ProjectId == projId);
+            return bidRequests.ToList();
+        }
+
         public List<Project> GetProjects(string ownerId)
         {
             var owner = freelancerDb.Owners
                 .Include(t=>t.User)
                 .Include(t=>t.Projects)
                 .ThenInclude(pr=>pr.ProjectSkill)
+                .ThenInclude(ps => ps.Skill)
                 .FirstOrDefault(t => t.OwnerId == ownerId);
 
             if (owner == null) return new List<Project>();
@@ -99,6 +114,12 @@ namespace Freelancer_Exam.Services.Concrete
             bidRequest.RequestStatus = RequestStatus.Confirmed;
             bidRequest.Project.Status = Status.Working;
 
+            var bss = freelancerDb.BidRequests.Where(bs => bs.Project.ProjectId == bidRequest.Project.ProjectId)
+                .ToList();
+
+            foreach (var request in bss.Where(request => request.BidRequestId != bidRequest.BidRequestId)) {
+                request.RequestStatus = RequestStatus.Rejected;
+            }
             var confirmedRequest = new ConfirmedRequest
             {
                 ConfirmedRequestId = Guid.NewGuid().ToString(),
@@ -111,11 +132,17 @@ namespace Freelancer_Exam.Services.Concrete
             return true;
         }
 
-        public List<BidRequest> GetAllBidRequests(string userId)
+        public List<BidRequest> GetAllBidRequests(string ownerId)
         {
             var bidRequests = freelancerDb.BidRequests
-                .Include(t => t.Project.Owner)
-                .Where(t => t.Project.Owner.OwnerId == userId).ToList();
+                .Include(t => t.Project)
+                .ThenInclude(t => t.Owner)
+                .Include(t => t.Developer)
+                .ThenInclude(d => d.DeveloperSkill)
+                .ThenInclude(ds => ds.Skill)
+                .Include(d => d.Developer)
+                .ThenInclude(t => t.User)
+                .Where(t => t.Project.Owner.OwnerId == ownerId).ToList();
             return bidRequests;
         }
 

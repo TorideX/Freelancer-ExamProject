@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -11,7 +10,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace Freelancer_Exam.Controllers {
     [Authorize(Roles = "Developer")]
@@ -36,53 +34,30 @@ namespace Freelancer_Exam.Controllers {
             await file.CopyToAsync(stream);
             return RedirectToAction("Profile", "Developer");
         }
+
+        public async Task<IActionResult> CompleteProject(string userId, string requestId) {
+            _freelancerService.CompleteProject(userId, requestId);
+            return Ok();
+        }
         
         [HttpGet]
-        public async Task<IActionResult> Profile() {
+        public async Task<IActionResult> Profile(int currentPage = 1) {
             var user = await _userManager.GetUserAsync(HttpContext.User);
-            var developer = _freelancerDb.Developers?
-                .Include(d => d.DeveloperSkill).ThenInclude(ds => ds.Skill).ThenInclude(s => s.DeveloperSkill)
-                .Include(d => d.BidRequests).ThenInclude(br => br.Project).ThenInclude(p => p.Owner)
-                .FirstOrDefault(d => d.User.Id == user.Id);
-            if (developer?.DeveloperSkill != null) {
-                var developerSkillList = developer.DeveloperSkill?
-                    .Select(developerSkill => new DeveloperSkillViewModel {
-                        DeveloperId = developerSkill.DeveloperId,
-                        SkillId = developerSkill.SkillId,
-                        DeveloperViewModel = new DeveloperViewModel {
-                            Id = developerSkill.Developer.DeveloperId, Rating = developerSkill.Developer.Rating,
-                            User = new UserViewModel {
-                                JoinedDate = developerSkill.Developer.User.JoinedDate.ToString("Y"),
-                                Email = developerSkill.Developer.User.Email,
-                                Country = developerSkill.Developer.User.Country, Name = developerSkill.Developer.User.Name,
-                                Surname = developerSkill.Developer.User.Surname,
-                                ProfilePicture = developerSkill.Developer.User.ProfilePicture
-                            }
-                        },
-                        SkillViewModel = new SkillViewModel {
-                            Name = developerSkill.Skill.Name,
-                            SkillId = developerSkill.Skill.SkillId
-                        }
-                    }).ToList();
+            var developer = _freelancerService.GetDeveloperByUserId(user.Id);
 
-                var developerViewModel = new DeveloperViewModel {
-                    Id = developer.DeveloperId,
-                    Rating = developer.Rating,
-                    User = new UserViewModel {
-                        JoinedDate = developer.User.JoinedDate.ToString("Y"),
-                        Email = developer.User.Email,
-                        Country = developer.User.Country,
-                        Name = developer.User.Name,
-                        Surname = developer.User.Surname,
-                        ProfilePicture = developer.User.ProfilePicture
-                    },
-                    DeveloperSkillViewModel = developerSkillList
-                };
+            int maxRows = 3;
+            int count = developer.BidRequests.Count;
+            
+            developer.BidRequests =  (from bidRequest in developer.BidRequests select bidRequest)
+                .OrderBy(bidRequest => bidRequest.RequestStatus)
+                .Skip((currentPage - 1) * maxRows)
+                .Take(maxRows).ToList();
 
-
-                return View("Profile",developerViewModel);
-            }
-            return View("Profile");
+            var devModel = new devProfVm() {PagingModel = new PagingModel(), Developer = developer};
+            double pageCount = (double)(count / Convert.ToDecimal(maxRows));
+            devModel.PagingModel.PageCount = (int)Math.Ceiling(pageCount);
+            devModel.PagingModel.CurrentPageIndex = currentPage;
+            return View("Profile",devModel);
         }
 
         [HttpPost]

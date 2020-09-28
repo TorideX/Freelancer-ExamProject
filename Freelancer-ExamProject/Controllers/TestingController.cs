@@ -107,24 +107,24 @@ namespace Freelancer_Exam.Controllers
 
         public string AddOwnerProject()
         {
-            var faker = new Bogus.Faker();
-
-            var project = new AddProjectViewModel
-            {
-                Title = faker.Name.JobTitle(),
-                Description = faker.Name.JobDescriptor(),
-                MinPrice = 10,
-                MaxPrice = 100,
-                Status = Status.Pending,  // WTF is this???
-                RequiredSkill = new List<string>
-                {
-                    faker.Company.CompanySuffix(),
-                    faker.Company.CompanySuffix()
-                }
-            };
-            var userId = "75a63a94-ec99-460b-b75f-04282a044035";
-
-            ownerService.AddProject(userId, project);
+            // var faker = new Bogus.Faker();
+            //
+            // var project = new AddProjectViewModel
+            // {
+            //     Title = faker.Name.JobTitle(),
+            //     Description = faker.Name.JobDescriptor(),
+            //     MinPrice = 10,
+            //     MaxPrice = 100,
+            //     Status = Status.Pending,  // WTF is this???
+            //     RequiredSkill = new List<string>
+            //     {
+            //         faker.Company.CompanySuffix(),
+            //         faker.Company.CompanySuffix()
+            //     }
+            // };
+            // var userId = "75a63a94-ec99-460b-b75f-04282a044035";
+            //
+            // ownerService.AddProject(userId, project);
             return "Added";
         }
 
